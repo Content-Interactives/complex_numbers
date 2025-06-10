@@ -61,6 +61,14 @@ const ComplexNumbers = () => {
 		setShowContinue3(false);
 		setIsContinue3Shrinking(false);
 		setShowSimplified(false);
+		// Reset glow animation states
+		setTimeout(() => {
+			setIsAnimating(false);
+			setIsExploreShrinking(false);
+			setIsContinueShrinking(false);
+			setIsContinue2Shrinking(false);
+			setIsContinue3Shrinking(false);
+		}, 100);
 	};
 
 	const handleContinue = () => {
@@ -168,6 +176,82 @@ const ComplexNumbers = () => {
 		<div className="w-[464px] mx-auto mt-5 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1),0_0_0_1px_rgba(0,0,0,0.05)] bg-white rounded-lg select-none">
 			<style>
 				{`
+					@property --r {
+						syntax: '<angle>';
+						inherits: false;
+						initial-value: 0deg;
+					}
+
+					.glow-button { 
+						position: absolute;
+						bottom: 0.5rem;
+						right: 0.5rem;
+						border-radius: 8px;
+						cursor: pointer;
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						z-index: 1;
+						transition: all .3s ease;
+						padding: 7px;
+					}
+
+					.glow-button::before {
+						content: "";
+						display: block;
+						position: absolute;
+						background: #fff;
+						inset: 2px;
+						border-radius: 4px;
+						z-index: -2;
+					}
+
+					.simple-glow {
+						background: conic-gradient(
+							from var(--r),
+							transparent 0%,
+							rgb(0, 255, 132) 2%,
+							rgb(0, 214, 111) 8%,
+							rgb(0, 174, 90) 12%,
+							rgb(0, 133, 69) 14%,
+							transparent 15%
+						);
+						animation: rotating 3s linear infinite;
+						transition: animation 0.3s ease;
+					}
+
+					.simple-glow.stopped {
+						animation: none;
+						background: none;
+					}
+
+					.simple-glow.delayed-glow {
+						animation: none;
+						background: none;
+					}
+
+					.simple-glow.delayed-glow.active {
+						animation: rotating 3s linear infinite;
+						background: conic-gradient(
+							from var(--r),
+							transparent 0%,
+							rgb(0, 255, 132) 2%,
+							rgb(0, 214, 111) 8%,
+							rgb(0, 174, 90) 12%,
+							rgb(0, 133, 69) 14%,
+							transparent 15%
+						);
+					}
+
+					@keyframes rotating {
+						0% {
+							--r: 0deg;
+						}
+						100% {
+							--r: 360deg;
+						}
+					}
+
 					@keyframes fadeIn {
 						from {
 							opacity: 0;
@@ -292,6 +376,20 @@ const ComplexNumbers = () => {
 					.fade-in-down {
 						animation: fadeInDown 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 					}
+					.explore-button {
+						background-color: #008545;
+						color: white;
+						border: none;
+						border-radius: 0.25rem;
+						padding: 0.375rem 0.75rem;
+						font-size: 0.875rem;
+						font-weight: 600;
+						cursor: pointer;
+						transition: all 0.2s;
+					}
+					.explore-button:hover {
+						background-color: #00783E;
+					}
 				`}
 			</style>
 			<div className="p-4">
@@ -301,11 +399,11 @@ const ComplexNumbers = () => {
 						{/* Existing Reset button */}
 						<button
 							className="reset-button
-								bg-[#5750E3] text-white border-none rounded
+								bg-gray-500 text-white border-none rounded
 								cursor-pointer flex items-center justify-center
 								text-xs font-bold px-2 py-1
 								transition-colors duration-200
-								hover:bg-[#4a42c7]
+								hover:bg-gray-600
 								disabled:opacity-50 disabled:cursor-not-allowed"
 							onClick={handleReset}
 							title="Reset interactive"
@@ -1268,55 +1366,75 @@ const ComplexNumbers = () => {
 										</svg>
 									</div>
 								</div>
-								{showContinue && (
-									<button
-										className={`absolute bottom-4 right-4 px-3 py-1.5 bg-[#5750E3] text-white text-sm rounded-full hover:bg-[#4a42c7] transition-colors duration-200 select-none
-											${isContinueShrinking ? 'shrink-animation' : 'continue-animation'}`}
-										onClick={handleContinue}
-										style={{
-											transformOrigin: 'center',
-											zIndex: 3,
-										}}
-									>
-										Continue
-									</button>
-								)}
-								{showContinue2 && (
-									<button
-										className={`absolute bottom-4 right-4 px-3 py-1.5 bg-[#5750E3] text-white text-sm rounded-full hover:bg-[#4a42c7] transition-colors duration-200 select-none
-											${isContinue2Shrinking ? 'shrink-animation' : 'continue-animation'}`}
-										onClick={handleContinue2}
-										style={{
-											transformOrigin: 'center',
-											zIndex: 3,
-										}}
-									>
-										Continue
-									</button>
-								)}
-								{showContinue3 && (
-									<button
-										className={`absolute bottom-4 right-4 px-3 py-1.5 bg-[#5750E3] text-white text-sm rounded-full hover:bg-[#4a42c7] transition-colors duration-200 select-none
-											${isContinue3Shrinking ? 'shrink-animation' : 'continue-animation'}`}
-										onClick={handleContinue3}
-										style={{
-											transformOrigin: 'center',
-											zIndex: 3,
-										}}
-									>
-										Continue
-									</button>
-								)}
+								<div className={`glow-button ${isAnimating ? 'simple-glow stopped' : 'simple-glow'}`} style={{ 
+									position: 'absolute', 
+									bottom: '0rem', 
+									right: '0rem', 
+									zIndex: 50,
+									width: 'fit-content',
+									height: 'fit-content',
+									padding: '2px'
+								}}>
+									{showContinue && (
+										<div className={`glow-button ${isContinueShrinking ? 'simple-glow stopped' : 'simple-glow'}`} style={{ zIndex: 50 }}>
+											<button
+												className={`px-3 py-1.5 bg-[#008545] hover:bg-[#00783E] text-white text-sm rounded transition-colors duration-200 select-none
+													${isContinueShrinking ? 'shrink-animation' : 'continue-animation'}`}
+												onClick={handleContinue}
+												style={{
+													transformOrigin: 'center',
+													zIndex: 50,
+													borderRadius: '4px'
+												}}
+											>
+												Continue
+											</button>
+										</div>
+									)}
+									{showContinue2 && (
+										<div className={`glow-button ${isContinue2Shrinking ? 'simple-glow stopped' : 'simple-glow'}`} style={{ zIndex: 50 }}>
+											<button
+												className={`px-3 py-1.5 bg-[#008545] hover:bg-[#00783E] text-white text-sm rounded transition-colors duration-200 select-none
+													${isContinue2Shrinking ? 'shrink-animation' : 'continue-animation'}`}
+												onClick={handleContinue2}
+												style={{
+													transformOrigin: 'center',
+													zIndex: 50,
+													borderRadius: '4px'
+												}}
+											>
+												Continue
+											</button>
+										</div>
+									)}
+									{showContinue3 && (
+										<div className={`glow-button ${isContinue3Shrinking ? 'simple-glow stopped' : 'simple-glow'}`} style={{ zIndex: 50 }}>
+											<button
+												className={`px-3 py-1.5 bg-[#008545] hover:bg-[#00783E] text-white text-sm rounded transition-colors duration-200 select-none
+													${isContinue3Shrinking ? 'shrink-animation' : 'continue-animation'}`}
+												onClick={handleContinue3}
+												style={{
+													transformOrigin: 'center',
+													zIndex: 50,
+													borderRadius: '4px'
+												}}
+											>
+												Continue
+											</button>
+										</div>
+									)}
+								</div>
 							</>
 						)}
-						<button
-							className={`absolute bottom-4 right-4 px-3 py-1.5 bg-[#5750E3] text-white text-sm rounded-full hover:bg-[#4a42c7] transition-colors duration-200 select-none ${isExploreShrinking ? 'shrink-animation' : ''}`}
-							style={{ transformOrigin: 'center', zIndex: 3 }}
-							onClick={handleExploreClick}
-							disabled={isAnimating}
-						>
-							Click to Explore!
-						</button>
+						<div className={`glow-button ${isExploreShrinking || isAnimating ? 'simple-glow stopped' : 'simple-glow'}`} style={{ position: 'absolute', bottom: '0.5rem', right: '0.5rem' }}>
+							<button
+								className={`explore-button ${isExploreShrinking ? 'shrink-animation' : ''}`}
+								onClick={handleExploreClick}
+								disabled={isAnimating}
+							>
+								Click to Explore!
+							</button>
+						</div>
 					</div>
 
 					{/* Text Section */}
@@ -1359,5 +1477,4 @@ const ComplexNumbers = () => {
 	);
 };
 
-
-export default ComplexNumbers; 
+export default ComplexNumbers;
