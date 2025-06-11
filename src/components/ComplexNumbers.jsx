@@ -398,20 +398,10 @@ const ComplexNumbers = () => {
 					<div className="flex gap-2">
 						{/* Existing Reset button */}
 						<button
-							className="reset-button
-								bg-gray-500 text-white border-none rounded
-								cursor-pointer flex items-center justify-center
-								text-xs font-bold px-2 py-1
-								transition-colors duration-200
-								hover:bg-gray-600
-								disabled:opacity-50 disabled:cursor-not-allowed"
+							className="text-gray-500 hover:text-gray-700 text-sm px-3 py-1 rounded border border-gray-300 hover:border-gray-400 transition-colors"
 							onClick={handleReset}
 							title="Reset interactive"
 							disabled={isAnimating}
-							style={{
-								fontFamily: 'system-ui, -apple-system, sans-serif',
-								lineHeight: 1,
-							}}
 						>
 							Reset
 						</button>
