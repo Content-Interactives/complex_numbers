@@ -1,41 +1,54 @@
 # Complex Numbers
 
-The **Complex Numbers** interactive helps students understand the concept of complex numbers, including how to represent and work with imaginary numbers.
+React + Vite visualization of the complex plane and basic operations on \(a+bi\) (inputs and arithmetic in `ComplexNumbers.jsx`).
+
+**Live site:** [https://content-interactives.github.io/complex_numbers](https://content-interactives.github.io/complex_numbers)
+
+Curriculum alignment and placement: [Standards.md](Standards.md).
 
 ---
 
-## 🔗 Live Interactive
+## Stack
 
-Try it out here:  
-👉 [https://content-interactives.github.io/complex_numbers](https://content-interactives.github.io/complex_numbers)
-
----
-
-## 🌐 Where This Interactive Is Being Used
-
-This interactive is currently featured in the following locations:
-
-- <img width="20" height="20" alt="image" src="https://github.com/user-attachments/assets/5d12571f-8e12-4441-98ab-c0bc94069a96" /> **CK-12 Intent Response**  
-  - 👉 PRODUCTION: PENDING  
-  - 👉 MASTER: PENDING  
-- 📘 **CK-12 Flexbooks**
-  - 👉 PENDING
+| Layer | Notes |
+|--------|--------|
+| Build | Vite 6, `@vitejs/plugin-react` |
+| UI | React 19 |
+| Styling | Tailwind 3 |
+| Icons | lucide-react |
+| Deploy | `gh-pages -d dist`; `predeploy` runs `vite build` |
 
 ---
 
-## 📚 Standards & Subjects
+## Layout
 
-This interactive aligns with the following topics and standards:
-
-- **📂 Subject Area**: High School Math  
-- **🧮 Topic**: Complex Numbers  
-- **📏 Common Core**:  
-  - HSN.CN.A.1 – Know there is a complex number *i* such that *i² = –1*, and every complex number has the form *a + bi* with *a* and *b* real.  
-  - HSN.CN.A.2 – Use the relation *i² = –1* and the commutative, associative, and distributive properties to add, subtract, and multiply complex numbers.
+```
+vite.config.js          # base: '/complex_numbers/'
+src/
+  main.jsx → App.jsx → components/ComplexNumbers.jsx
+  components/ui/
+```
 
 ---
 
-## 🛠️ Developer Notes
+## `vite.config.js`
 
-- Built with: React, HTML, CSS, JavaScript  
-- Deployed via GitHub Pages
+`base: '/complex_numbers/'` must match the GitHub Pages repository path.
+
+---
+
+## Scripts
+
+| Command | Purpose |
+|---------|---------|
+| `npm run dev` | Vite dev server |
+| `npm run build` | Production build → `dist/` |
+| `npm run preview` | Preview production build |
+| `npm run lint` | ESLint |
+| `npm run deploy` | Build and push `dist/` to `gh-pages` |
+
+---
+
+## Embedding
+
+Argand diagram size is set in `ComplexNumbers.jsx`; scale iframe to avoid clipping.
